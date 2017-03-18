@@ -9,4 +9,7 @@ export NODES="centos@172.31.0.12 centos@172.31.0.10"
 export KUBERNETES_PROVIDER=centos
 
 export ENABLE_CLUSTER_DNS=true
+export DNS_SERVER_IP=192.168.3.10
+export DNS_DOMAIN=cluster.local
+
 export ENABLE_CLUSTER_UI=true

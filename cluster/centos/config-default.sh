@@ -51,3 +51,10 @@ export DOCKER_OPTS=${DOCKER_OPTS:-""}
 
 # Timeouts for process checking on master and minion
 export PROCESS_CHECK_TIMEOUT=${PROCESS_CHECK_TIMEOUT:-180} # seconds.
+
+# Optional: Install cluster DNS.
+ENABLE_CLUSTER_DNS="${KUBE_ENABLE_CLUSTER_DNS:-true}"
+# DNS_SERVER_IP must be a IP in SERVICE_CLUSTER_IP_RANGE
+DNS_SERVER_IP=${DNS_SERVER_IP:-"192.168.3.10"}
+DNS_DOMAIN=${DNS_DOMAIN:-"cluster.local"}
+
