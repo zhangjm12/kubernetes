@@ -179,7 +179,7 @@ function troubleshoot-node() {
 # Clean up on master
 function tear-down-master() {
 echo "[INFO] tear-down-master on ${MASTER}"
-  for service_name in etcd kube-apiserver kube-controller-manager kube-scheduler ; do
+  for service_name in kube-proxy kubelet docker flannel etcd kube-apiserver kube-controller-manager kube-scheduler ; do
       service_file="/usr/lib/systemd/system/${service_name}.service"
       kube-ssh "$MASTER" " \
         if [[ -f $service_file ]]; then \
@@ -188,6 +188,7 @@ echo "[INFO] tear-down-master on ${MASTER}"
           sudo rm -f $service_file; \
         fi"
   done
+  kube-ssh "${MASTER}" "sudo rm -rf /run/flannel"
   kube-ssh "${MASTER}" "sudo rm -rf /opt/kubernetes"
   kube-ssh "${MASTER}" "sudo rm -rf ${KUBE_TEMP}"
   kube-ssh "${MASTER}" "sudo rm -rf /var/lib/etcd"
@@ -223,15 +224,20 @@ function provision-master() {
   ensure-setup-dir ${MASTER}
 
   # scp -r ${SSH_OPTS} master config-default.sh copy-files.sh util.sh "${MASTER}:${KUBE_TEMP}"
-  kube-scp ${MASTER} "${ROOT}/../saltbase/salt/generate-cert/make-ca-cert.sh ${ROOT}/binaries/master ${ROOT}/master ${ROOT}/config-default.sh ${ROOT}/util.sh" "${KUBE_TEMP}"
+  kube-scp ${MASTER} "${ROOT}/../saltbase/salt/generate-cert/make-ca-cert.sh ${ROOT}/binaries/master ${ROOT}/master ${ROOT}/node ${ROOT}/config-default.sh ${ROOT}/util.sh" "${KUBE_TEMP}"
   kube-ssh "${MASTER}" " \
     sudo cp -r ${KUBE_TEMP}/master/bin /opt/kubernetes; \
+    sudo cp -r ${KUBE_TEMP}/node/bin /opt/kubernetes; \
     sudo chmod -R +x /opt/kubernetes/bin; \
     sudo bash ${KUBE_TEMP}/make-ca-cert.sh ${master_ip} IP:${master_ip},IP:${SERVICE_CLUSTER_IP_RANGE%.*}.1,DNS:kubernetes,DNS:kubernetes.default,DNS:kubernetes.default.svc,DNS:kubernetes.default.svc.cluster.local; \
     sudo bash ${KUBE_TEMP}/master/scripts/etcd.sh; \
     sudo bash ${KUBE_TEMP}/master/scripts/apiserver.sh ${master_ip} ${ETCD_SERVERS} ${SERVICE_CLUSTER_IP_RANGE} ${ADMISSION_CONTROL}; \
     sudo bash ${KUBE_TEMP}/master/scripts/controller-manager.sh ${master_ip}; \
-    sudo bash ${KUBE_TEMP}/master/scripts/scheduler.sh ${master_ip}"
+    sudo bash ${KUBE_TEMP}/master/scripts/scheduler.sh ${master_ip}; \
+    sudo bash ${KUBE_TEMP}/node/scripts/flannel.sh ${ETCD_SERVERS} ${FLANNEL_NET}; \
+    sudo bash ${KUBE_TEMP}/node/scripts/docker.sh \"${DOCKER_OPTS}\"; \
+    sudo bash ${KUBE_TEMP}/node/scripts/kubelet.sh ${master_ip} ${master_ip}; \
+    sudo bash ${KUBE_TEMP}/node/scripts/proxy.sh ${master_ip}"
 }
 
 
