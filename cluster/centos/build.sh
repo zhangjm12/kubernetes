@@ -65,8 +65,8 @@ function unpack-releases() {
   # flannel
   if [[ -f ${RELEASES_DIR}/flannel.tar.gz ]] ; then
     tar xzf ${RELEASES_DIR}/flannel.tar.gz -C ${RELEASES_DIR}
-    cp ${RELEASES_DIR}/flannel-${FLANNEL_VERSION}/flanneld ${BINARY_DIR}/master/bin
-    cp ${RELEASES_DIR}/flannel-${FLANNEL_VERSION}/flanneld ${BINARY_DIR}/node/bin
+    cp ${RELEASES_DIR}/flanneld ${BINARY_DIR}/master/bin
+    cp ${RELEASES_DIR}/flanneld ${BINARY_DIR}/node/bin
   fi
 
   # ectd
@@ -89,7 +89,9 @@ function unpack-releases() {
     tar xzf ${RELEASES_DIR}/kubernetes-server-linux-amd64.tar.gz -C ${RELEASES_DIR}
     cp ${RELEASES_DIR}/kubernetes/server/bin/kube-apiserver \
        ${RELEASES_DIR}/kubernetes/server/bin/kube-controller-manager \
-       ${RELEASES_DIR}/kubernetes/server/bin/kube-scheduler ${BINARY_DIR}/master/bin
+       ${RELEASES_DIR}/kubernetes/server/bin/kube-scheduler \
+       ${RELEASES_DIR}/kubernetes/server/bin/kubelet \
+       ${RELEASES_DIR}/kubernetes/server/bin/kube-proxy ${BINARY_DIR}/master/bin
     cp ${RELEASES_DIR}/kubernetes/server/bin/kubelet \
        ${RELEASES_DIR}/kubernetes/server/bin/kube-proxy ${BINARY_DIR}/node/bin
   fi
@@ -98,6 +100,7 @@ function unpack-releases() {
   if [[ -f ${RELEASES_DIR}/docker.tar.gz ]]; then
     tar xzf ${RELEASES_DIR}/docker.tar.gz -C ${RELEASES_DIR}
 
+    cp ${RELEASES_DIR}/docker/docker* ${BINARY_DIR}/master/bin
     cp ${RELEASES_DIR}/docker/docker* ${BINARY_DIR}/node/bin
   fi
 

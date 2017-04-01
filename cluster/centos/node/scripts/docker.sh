@@ -20,6 +20,7 @@ DOCKER_OPTS=${1:-""}
 DOCKER_CONFIG=/opt/kubernetes/cfg/docker
 
 cat <<EOF >$DOCKER_CONFIG
+HTTPS_PROXY=http://172.31.0.13:3128
 DOCKER_OPTS="-H tcp://127.0.0.1:4243 -H unix:///var/run/docker.sock --selinux-enabled=false ${DOCKER_OPTS}"
 EOF
 
