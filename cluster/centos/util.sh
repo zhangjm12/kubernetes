@@ -239,7 +239,7 @@ function provision-master() {
     sudo bash ${KUBE_TEMP}/master/scripts/apiserver.sh ${master_ip} ${ETCD_SERVERS} ${SERVICE_CLUSTER_IP_RANGE} ${ADMISSION_CONTROL}; \
     sudo bash ${KUBE_TEMP}/master/scripts/controller-manager.sh ${master_ip}; \
     sudo bash ${KUBE_TEMP}/master/scripts/scheduler.sh ${master_ip}; \
-    sudo bash ${KUBE_TEMP}/node/scripts/flannel.sh ${ETCD_SERVERS} ${FLANNEL_NET}; \
+    sudo bash ${KUBE_TEMP}/node/scripts/flannel.sh ${ETCD_SERVERS} ${FLANNEL_NET} ${master_ip}; \
     sudo bash ${KUBE_TEMP}/node/scripts/docker.sh \"${DOCKER_OPTS}\"; \
     sudo bash ${KUBE_TEMP}/node/scripts/kubelet.sh ${master_ip} ${master_ip} ${dns_ip} ${dns_domain}; \
     sudo bash ${KUBE_TEMP}/node/scripts/proxy.sh ${master_ip}"
@@ -270,7 +270,7 @@ function provision-node() {
     sudo cp -r ${KUBE_TEMP}/node/bin /opt/kubernetes; \
     sudo chmod -R +x /opt/kubernetes/bin; \
     sudo ln -s /opt/kubernetes/bin/* /usr/local/bin/; \
-    sudo bash ${KUBE_TEMP}/node/scripts/flannel.sh ${ETCD_SERVERS} ${FLANNEL_NET}; \
+    sudo bash ${KUBE_TEMP}/node/scripts/flannel.sh ${ETCD_SERVERS} ${FLANNEL_NET} ${node_ip}; \
     sudo bash ${KUBE_TEMP}/node/scripts/docker.sh \"${DOCKER_OPTS}\"; \
     sudo bash ${KUBE_TEMP}/node/scripts/kubelet.sh ${master_ip} ${node_ip} ${dns_ip} ${dns_domain}; \
     sudo bash ${KUBE_TEMP}/node/scripts/proxy.sh ${master_ip}"

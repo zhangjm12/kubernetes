@@ -17,9 +17,11 @@
 
 ETCD_SERVERS=${1:-"http://8.8.8.18:2379"}
 FLANNEL_NET=${2:-"172.16.0.0/16"}
+FLANNELD_IFACE=${3:-""}
 
 
 cat <<EOF >/opt/kubernetes/cfg/flannel
+FLANNELD_IFACE="${FLANNELD_IFACE}"
 FLANNEL_ETCD="-etcd-endpoints=${ETCD_SERVERS}"
 FLANNEL_ETCD_KEY="-etcd-prefix=/coreos.com/network"
 EOF
