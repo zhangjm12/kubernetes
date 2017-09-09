@@ -286,8 +286,9 @@ function provision-master() {
 function post-provision-master() {
   echo "[INFO] Post provision master on $1"
   local master=$1
+  local master_ip="${master#*@}"
   kube-ssh "${master}" " \
-    sudo bash ${KUBE_TEMP}/master/scripts/flannel.sh ${ETCD_SERVERS} ${FLANNEL_NET}; \
+    sudo bash ${KUBE_TEMP}/master/scripts/flannel.sh ${ETCD_SERVERS} ${FLANNEL_NET} ${master_ip}; \
     sudo bash ${KUBE_TEMP}/master/scripts/post-etcd.sh"
 }
 
@@ -321,7 +322,7 @@ function provision-node() {
     sudo mkdir -p /srv/kubernetes/etcd; sudo cp -f ${KUBE_TEMP}/etcd-cert/* /srv/kubernetes/etcd/; \
     sudo ln -s /opt/kubernetes/bin/* /usr/local/bin/; \
     sudo mkdir -p /srv/kubernetes/etcd; sudo cp -f ${KUBE_TEMP}/etcd-cert/* /srv/kubernetes/etcd/; \
-    sudo bash ${KUBE_TEMP}/node/scripts/flannel.sh ${ETCD_SERVERS} ${FLANNEL_NET}; \
+    sudo bash ${KUBE_TEMP}/node/scripts/flannel.sh ${ETCD_SERVERS} ${FLANNEL_NET} ${node_ip}; \
     sudo bash ${KUBE_TEMP}/node/scripts/docker.sh \"${DOCKER_OPTS}\"; \
     sudo bash ${KUBE_TEMP}/node/scripts/kubelet.sh ${MASTER_ADVERTISE_ADDRESS} ${node_ip} ${dns_ip} ${dns_domain}; \
     sudo bash ${KUBE_TEMP}/node/scripts/proxy.sh ${MASTER_ADVERTISE_ADDRESS}"
