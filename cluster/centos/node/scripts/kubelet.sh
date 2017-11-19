@@ -29,7 +29,7 @@ KUBE_LOGTOSTDERR="--logtostderr=true"
 KUBE_LOG_LEVEL="--v=4"
 
 # --address=0.0.0.0: The IP address for the Kubelet to serve on (set to 0.0.0.0 for all interfaces)
-NODE_ADDRESS="--address=${NODE_ADDRESS}"
+NODE_ADDRESS="--address=0.0.0.0"
 
 # --port=10250: The port for the Kubelet to serve on. Note that "kubectl logs" will not work if you set this flag.
 NODE_PORT="--port=10250"
