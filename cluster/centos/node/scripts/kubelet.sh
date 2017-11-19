@@ -42,7 +42,7 @@ NODE_HOSTNAME="--hostname-override=${NODE_ADDRESS}"
 KUBELET_API_SERVER="--api-servers=${MASTER_ADDRESS}:8080"
 
 # --allow-privileged=false: If true, allow containers to request privileged mode. [default=false]
-KUBE_ALLOW_PRIV="--allow-privileged=false"
+KUBE_ALLOW_PRIV="--allow-privileged=true"
 
 # DNS info
 KUBELET__DNS_IP="--cluster-dns=${DNS_SERVER_IP}"
